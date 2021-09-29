@@ -64,7 +64,6 @@ router.put('/:id', async (req, res) => {
         });
       } else {
         const editedPost = await Post.update(id, post);
-        console.log(editedPost);
         res.status(200).json({id: editedPost, ...post});
       }
     } else {
@@ -78,5 +77,24 @@ router.put('/:id', async (req, res) => {
     })
   }
 });
+
+router.delete('/:id', async (req, res) => {
+  try {
+    const {id} = req.params;
+    const postToDelete = await Post.findById(id);
+    if (postToDelete) {
+      await Post.remove(id);
+      res.status(200).json(postToDelete);
+    } else {
+      res.status(404).json({
+        "message":"The post with the specified ID does not exist"
+      });
+    }
+  } catch {
+    res.status(500).json({
+      "message":"The comments information could not be retrieved"
+    })
+  }
+})
 
 module.exports = router;
